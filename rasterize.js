@@ -77,15 +77,13 @@ function getJSONFile(url,descr) {
 
 // does stuff when keys are pressed
 function handleKeyDown(event) {
-    
-    const modelEnum = {TRIANGLES: "triangles", ELLIPSOID: "ellipsoid"}; // enumerated model type
     const dirEnum = {NEGATIVE: -1, POSITIVE: 1}; // enumerated rotation direction
     
     function highlightModel(modelType,whichModel) {
         if (handleKeyDown.modelOn != null)
             handleKeyDown.modelOn.on = false;
         handleKeyDown.whichOn = whichModel;
-        if (modelType == modelEnum.TRIANGLES)
+        if (modelType == "triangles")
             handleKeyDown.modelOn = inputTriangles[whichModel]; 
         handleKeyDown.modelOn.on = true; 
     } // end highlight model
@@ -124,10 +122,10 @@ function handleKeyDown(event) {
             handleKeyDown.whichOn = -1; // nothing highlighted
             break;
         case "ArrowRight": // select next triangle set
-            highlightModel(modelEnum.TRIANGLES,(handleKeyDown.whichOn+1) % numTriangleSets);
+            highlightModel("triangles",(handleKeyDown.whichOn+1) % numTriangleSets);
             break;
         case "ArrowLeft": // select previous triangle set
-            highlightModel(modelEnum.TRIANGLES,(handleKeyDown.whichOn > 0) ? handleKeyDown.whichOn-1 : numTriangleSets-1);
+            highlightModel("triangles",(handleKeyDown.whichOn > 0) ? handleKeyDown.whichOn-1 : numTriangleSets-1);
             break;
         // view change
         case "KeyA": // translate view left, rotate left with shift
@@ -222,7 +220,7 @@ function handleKeyDown(event) {
                 vec3.set(inputTriangles[whichTriSet].translation,0,0,0);
                 vec3.set(inputTriangles[whichTriSet].xAxis,1,0,0);
                 vec3.set(inputTriangles[whichTriSet].yAxis,0,1,0);
-            } // end for all triangle sets
+            } 
             break;
         case "KeyB":
             modulateMode = !modulateMode;
@@ -339,6 +337,7 @@ function loadModels(url) {
             var uvToAdd;
             var maxCorner = vec3.fromValues(Number.MIN_VALUE,Number.MIN_VALUE,Number.MIN_VALUE); // bbox corner
             var minCorner = vec3.fromValues(Number.MAX_VALUE,Number.MAX_VALUE,Number.MAX_VALUE); // other corner
+            var temp = vec3.create();
         
             // process each triangle set to load webgl vertex and triangle buffers
             numTriangleSets = inputTriangles.length; // remember how many tri sets
@@ -396,7 +395,7 @@ function loadModels(url) {
                 gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint16Array(inputTriangles[whichSet].glTriangles),gl.STATIC_DRAW); // data in
 
             } // end for each triangle set 
-        
+            viewDelta = vec3.length(vec3.subtract(temp,maxCorner,minCorner)) / 100; // set global
         } // end if triangle file loaded
     } // end try 
     
@@ -652,8 +651,6 @@ function renderModels() {
         // triangle buffer: activate and render
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,triangleBuffers[whichTriSet]); // activate
         gl.drawElements(gl.TRIANGLES,3*triSetSizes[whichTriSet],gl.UNSIGNED_SHORT,0); // render
-
-        
     } // end for each triangle set
     gl.depthMask(true);
 } // end render model
