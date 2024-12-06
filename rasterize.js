@@ -43,7 +43,7 @@ var Up = vec3.clone(defaultUp); // view up vector in world space
 var modulateMode = false; // initial modulation set to false
 
 const NATURE_URL = "nature.json";
-const BG_URL = "https://ncsucgclass.github.io/prog3/sky.jpg";
+const BG_URL = "galaxy.png";
 const NATURE_BG_URL = "island.png";
 
 // ASSIGNMENT HELPER FUNCTIONS
@@ -274,6 +274,16 @@ function setupWebGL(url) {
     } // end catch
  
 } // end setupWebGL
+
+function createTexture(image) {
+    backgroundTexture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, backgroundTexture);
+
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
+}
 
 // Source: https://webglfundamentals.org/webgl/lessons/webgl-cors-permission.html
 function requestCORSIfNotSameOrigin(img, url) {
