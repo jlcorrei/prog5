@@ -1,17 +1,121 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="UTF-8">
     <title>Prog 5: Galaxian</title>
     
-    <link type="text/css" rel="stylesheet" href="rasterize.css">
+    <link type="text/css" rel="stylesheet" href="galaxian.css">
 
     <script type="text/javascript" src="gl-matrix.js"></script>
-    <script type="text/javascript" src="rasterize.js"></script>
+    <script type="text/javascript" src="galaxian.js"></script>
+    <script type="text/javascript">
+      var music = new Audio('galaxian_music.mp3');
+      var buttonPressed = false;
+      function playArcadeMusic() {
+        if (!buttonPressed) {
+          buttonPressed = true;
+          music = new Audio('galaxian_music.mp3');
+          music.loop = true;
+          music.volume = 1.0;
+          music.play().catch(error => {
+            console.error('Audio play failed:', error);
+          });
+        }
+      }
+      function updateScore() {
+        var scoreElement = document.getElementById("score");
+        scoreElement.textContent = `Score: ${score}`;
+      }
+      function boogieFever() {
+        music.pause();
+        music = new Audio('disco.mp3');
+        music.loop = true;
+        music.volume = 1.0;
+        music.play().catch(error => {
+          console.error('Audio play failed:', error);
+        });
+      }
+      function showYouWin() {
+        var youWin = document.getElementById("you-win");
+        youWin.style.display = "block";
+        music.pause();
+      }
+      function showYouLose() {
+        var youLose = document.getElementById("you-lose");
+        youLose.style.display = "block";
+        music.pause();
+      }
+      function onPageLoad() {
+        main();
+      }
+    </script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+      }
+
+      button {
+        font-size: 16px;
+        padding: 10px 20px;
+        margin-bottom: 20px;
+        cursor: pointer;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        position: absolute;
+        top: 522px;
+        left: 75px;
+        transform: translateX(-50%);
+        z-index: 2;
+      }
+
+      button:hover {
+        background-color: #45a049;
+      }
+      canvas {
+        display: block;
+        margin: 0 auto;
+      }
+    </style>
+  
   </head>
 
-  <body onload="main();">
+  <body onload="onPageLoad();">
+    <button onclick="playArcadeMusic()">Start Music</button>
     <canvas id="myImageCanvas" width="512" height="512"></canvas>
     <canvas id="myWebGLCanvas" width="512" height="512"></canvas> 
+    <div id="score" style = "position: absolute; top: 10px; left: 10px; color: white; font-size: 20px;">
+      Score: 0
+    </div>
+    <div id="you-win" style="display: none; 
+                              position: absolute; 
+                              top: 100px; 
+                              left: 250px; 
+                              transform: translate(-50%, -50%); 
+                              color: white; 
+                              font-size: 40px; 
+                              font-weight: bold; 
+                              background-color: rgba(0, 0, 0, 0.8); 
+                              padding: 20px; 
+                              text-align: center; 
+                              border-radius: 10px;">
+  YOU WIN
+  </div>
+  <div id="you-lose" style="display: none; 
+                              position: absolute; 
+                              top: 300px; 
+                              left: 250px; 
+                              transform: translate(-50%, -50%); 
+                              color: white; 
+                              font-size: 40px; 
+                              font-weight: bold; 
+                              background-color: rgba(0, 0, 0, 0.8); 
+                              padding: 20px; 
+                              text-align: center; 
+                              border-radius: 10px;">
+  GAME OVER
+  </div>
   </body>
 </html>
